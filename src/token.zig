@@ -23,6 +23,6 @@ pub const Token = struct {
     }
 
     pub fn print(self: Token) void {
-        std.debug.print("{s}:{s}", .{ @tagName(self.token_type), self.value });
+        std.debug.print("[{s}:{s}]\n", .{ @tagName(self.token_type), self.value });
     }
 };

@@ -1,6 +1,6 @@
-# BASIC REPL wirtten in Zig
+# REPL wirtten in Zig
 
-Learning zig by creating a BASIC REPL, maybe a compiler? Who knows
+Learning zig by creating a basic REPL, maybe a compiler? Who knows
 
 ## References
 

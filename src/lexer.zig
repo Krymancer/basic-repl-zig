@@ -9,7 +9,7 @@ pub const Lexer = struct {
     allocator: std.mem.Allocator,
 
     pub fn init(text: []const u8, allocator: std.mem.Allocator) @This() {
-        return @This(){ .text = text, .cursor = 0, .current_char = text[0], .allocator = allocator };
+        return .{ .text = text, .cursor = 0, .current_char = text[0], .allocator = allocator };
     }
 
     pub fn next(self: *@This()) void {

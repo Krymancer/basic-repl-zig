@@ -2,6 +2,7 @@ const std = @import("std");
 const Token = @import("token.zig").Token;
 const TokenType = @import("token.zig").TokenType;
 const Lexer = @import("lexer.zig").Lexer;
+const AST = @import("ast.zig").AST;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -20,10 +21,24 @@ pub fn main() !void {
         if (input) |i| {
             var lexer = Lexer.init(i, allocator);
             const tokens = try lexer.tokenize();
+            var ast = AST.init(allocator);
 
-            const iter = tokens.items;
-            for (iter) |token| {
-                token.print();
+            while (ast.current < tokens.items.len) {
+                const expr = try ast.walk(tokens);
+                switch (expr) {
+                    .Error => |err| {
+                        std.debug.print("Error parsing expression: {}\n", .{err});
+                        break;
+                    },
+                    .Success => |expression| {
+                        // Add the parsed expression to the AST body
+                        try ast.body.append(expression);
+                    },
+                }
+            }
+
+            for (ast.body.items) |expression| {
+                AST.printExpression(expression);
             }
         } else {
             std.process.exit(0);

@@ -32,7 +32,8 @@ pub const AST = struct {
             self.next();
             token = tokens.items[self.current];
 
-            var expr = Expression.CallExpression{
+            var call_expr = try self.allocator.create(*Expression.CallExpression);
+            call_expr.* = Expression.CallExpression{
                 .name = token.value,
                 .params = std.ArrayList(*Expression).init(self.allocator),
             };
@@ -41,11 +42,15 @@ pub const AST = struct {
 
             while (tokens.items[self.current].token_type != TokenType.Right_Parentises) {
                 const arg_expr = try self.walk(tokens);
-                try expr.params.append(arg_expr);
+                try call_expr.params.append(arg_expr);
             }
 
             self.next();
-            return try self.allocator.create(expr);
+
+            const expr = try self.allocator.create(*Expression);
+            expr.* = Expression{ .CallExpression = call_expr };
+
+            return expr;
         }
 
         return error.UnexpectedToken;

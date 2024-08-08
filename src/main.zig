@@ -24,17 +24,8 @@ pub fn main() !void {
             var ast = AST.init(allocator);
 
             while (ast.current < tokens.items.len) {
-                const expr = try ast.walk(tokens);
-                switch (expr) {
-                    .Error => |err| {
-                        std.debug.print("Error parsing expression: {}\n", .{err});
-                        break;
-                    },
-                    .Success => |expression| {
-                        // Add the parsed expression to the AST body
-                        try ast.body.append(expression);
-                    },
-                }
+                const expression = try ast.walk(tokens);
+                try ast.body.append(expression);
             }
 
             for (ast.body.items) |expression| {

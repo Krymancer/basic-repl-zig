@@ -32,7 +32,7 @@ pub const AST = struct {
             self.next();
             token = tokens.items[self.current];
 
-            var call_expr = try self.allocator.create(*Expression.CallExpression);
+            var call_expr = try self.allocator.create(Expression.CallExpression);
             call_expr.* = Expression.CallExpression{
                 .name = token.value,
                 .params = std.ArrayList(*Expression).init(self.allocator),
@@ -47,7 +47,7 @@ pub const AST = struct {
 
             self.next();
 
-            const expr = try self.allocator.create(*Expression);
+            const expr = try self.allocator.create(Expression);
             expr.* = Expression{ .CallExpression = call_expr };
 
             return expr;
@@ -57,17 +57,19 @@ pub const AST = struct {
     }
 
     pub fn printExpression(expr: *Expression) void {
-        const stdout = std.io.getStdOut().writer();
         switch (expr.*) {
             .NumberLiteral => |value| {
-                _ = stdout.print("{} ", .{value});
+                std.debug.print("{d} ", .{value});
             },
             .CallExpression => |call_expr| {
-                _ = stdout.print("({} ", .{call_expr.name});
+                std.debug.print("({s} ", .{call_expr.name});
+
+                std.debug.print("params: ", .{});
+
                 for (call_expr.params.items) |param| {
                     printExpression(param);
                 }
-                _ = stdout.print(") ", .{});
+                std.debug.print(")\n ", .{});
             },
         }
     }
